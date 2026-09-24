@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  title: SparkBoard API
+  version: 1.0.0
+  description: Mini Kanban contract between the SparkBoard frontend and FastAPI backend.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/health:
+    get:
+      summary: Liveness check
+      operationId: getHealth
+      responses:
+        "200":
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+  /api/boards:
+    get:
+      summary: List boards
+      operationId: listBoards
+      responses:
+        "200":
+          description: All boards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BoardSummary"
+    post:
+      summary: Create a board with default lanes
+      operationId: createBoard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BoardCreate"
+      responses:
+        "201":
+          description: Created board with empty lanes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        "400":
+          description: Invalid name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/boards/{boardId}:
+    get:
+      summary: Get one board with lanes and cards
+      operationId: getBoard
+      parameters:
+        - $ref: "#/components/parameters/BoardId"
+      responses:
+        "200":
+          description: Board detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        "404":
+          description: Unknown board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a board
+      operationId: deleteBoard
+      parameters:
+        - $ref: "#/components/parameters/BoardId"
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Unknown board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Cannot delete the last board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/boards/{boardId}/cards:
+    post:
+      summary: Add a card to a lane
+      operationId: createCard
+      parameters:
+        - $ref: "#/components/parameters/BoardId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CardCreate"
+      responses:
+        "201":
+          description: Created card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Unknown board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/cards/{cardId}:
+    patch:
+      summary: Update a card (edit text or move lane)
+      operationId: updateCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CardUpdate"
+      responses:
+        "200":
+          description: Updated card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        "400":
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Unknown card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a card
+      operationId: deleteCard
+      parameters:
+        - $ref: "#/components/parameters/CardId"
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Unknown card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  parameters:
+    BoardId:
+      name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    CardId:
+      name: cardId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    LaneKey:
+      type: string
+      enum: [backlog, in_progress, shipped]
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
+    Error:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string
+    BoardCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+    BoardSummary:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    Card:
+      type: object
+      required: [id, board_id, lane, title, description, position]
+      properties:
+        id:
+          type: string
+          format: uuid
+        board_id:
+          type: string
+          format: uuid
+        lane:
+          $ref: "#/components/schemas/LaneKey"
+        title:
+          type: string
+        description:
+          type: string
+        position:
+          type: integer
+          minimum: 0
+    CardCreate:
+      type: object
+      required: [title, lane]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 2000
+          default: ""
+        lane:
+          $ref: "#/components/schemas/LaneKey"
+    CardUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 2000
+        lane:
+          $ref: "#/components/schemas/LaneKey"
+    Lane:
+      type: object
+      required: [key, title, cards]
+      properties:
+        key:
+          $ref: "#/components/schemas/LaneKey"
+        title:
+          type: string
+        cards:
+          type: array
+          items:
+            $ref: "#/components/schemas/Card"
+    Board:
+      type: object
+      required: [id, name, lanes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        lanes:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: "#/components/schemas/Lane"

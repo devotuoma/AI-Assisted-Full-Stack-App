@@ -1,0 +1,182 @@
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8fb0ff;
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 40px;
+}
+
+.lede {
+  margin: 8px 0 0;
+  color: #b7c3d6;
+}
+
+.board-switch {
+  display: grid;
+  grid-template-columns: 160px 180px auto auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.board-switch label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: #9db0cc;
+}
+
+.board-switch input,
+.board-switch select,
+.lane input,
+.edit input,
+.edit textarea,
+button {
+  border: 1px solid #33415a;
+  background: #171e2b;
+  color: #e8edf5;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+button {
+  cursor: pointer;
+  background: #3d6dff;
+  border-color: #3d6dff;
+}
+
+button.danger {
+  background: transparent;
+  color: #ff9aa0;
+  border-color: #6a3a40;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.banner {
+  background: #3a1d24;
+  border: 1px solid #7a3a45;
+  color: #ffd4d7;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.lane {
+  background: rgba(23, 30, 43, 0.9);
+  border: 1px solid #2b364a;
+  border-radius: 18px;
+  padding: 16px;
+  min-height: 70vh;
+}
+
+.lane header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lane h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.lane header span {
+  background: #24324a;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.lane form,
+.edit {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.lane ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  background: #f4efe4;
+  color: #1b1a17;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.card p {
+  margin: 0 0 10px;
+  color: #4a463d;
+}
+
+.card .row,
+.edit .row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.card button {
+  background: #1b1a17;
+  border-color: #1b1a17;
+  color: #f4efe4;
+  padding: 6px 8px;
+}
+
+.card button.danger {
+  background: transparent;
+  color: #8a2f2f;
+  border-color: #c9a3a3;
+}
+
+.edit input,
+.edit textarea {
+  background: #fff;
+  color: #1b1a17;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .board,
+  .board-switch {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

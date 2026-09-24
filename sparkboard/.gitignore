@@ -1,0 +1,16 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+backend/sparkboard.db
+backend/*.db
+node_modules/
+frontend/dist/
+frontend/coverage/
+.env
+*.egg-info/
+.uv/
+uv.lock
